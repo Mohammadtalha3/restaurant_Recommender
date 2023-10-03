@@ -2,6 +2,7 @@ import requests
 import mysql.connector
 import sys
 import pandas as pd
+from flask import Flask, make_response
 
 
 
@@ -121,6 +122,50 @@ class user_clss():
                     print(f"Error inserting to database: {err}")
         else:
             print('No data to transfer to the database')
+    
+
+    def search_resturant(self,location):
+        if not location:
+            return make_response('No resturant found',400)
+        
+
+        query="""SELECT b.name AS resturant_name, b.is_closed,b.review_count,b.rating,b.display_phone,b.distance,l.address1,l.address2
+                 FROM businesses AS b
+                 INNER JOIN locations AS l ON b.id=l.business_id
+                 WHERE city=%s
+                """
+        
+        self.mycursor.execute(query, (location,))
+        resturants= self.mycursor.fetchall()
+
+        response=[]
+        for d in resturants:
+            location_info={
+                'Address1': d['address1'],
+                'Address2': d['address2'],
+                'distance': d['distance']
+
+            }
+            status={
+                'open': d['is_closed'],
+                'review': d['review_count'],
+                'rating': d['rating'],
+                'contact': d['display_phone'],
+
+            }
+
+            response.append({
+                'Restaurant name': d['resturant_name'],
+                'Status':status,
+                'Locations': location_info,
+
+
+            })
+
+            return response
+       
+
+
 
     
 

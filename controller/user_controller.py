@@ -1,7 +1,8 @@
 from app import app
 from model.user_model import user_clss
 
-from flask import request,make_response
+
+from flask import request,make_response,jsonify,Response
 import json
 obj= user_clss()
 
@@ -25,6 +26,10 @@ def user_lcoation():
     obj.location_transfer(yelp_data)
     return make_response('Location transfered succesfully',200)
 
+
+@app.route('/resturants/<location>',methods=['GET'])
+def user_show(location):
+    return jsonify(obj.search_resturant(location))
 
 
 
