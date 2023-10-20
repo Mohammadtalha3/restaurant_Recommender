@@ -1,19 +1,21 @@
 import streamlit as st
+from controller.user_controller import user_show
 import requests
 
 st.title('Restaurant Recommender')
 
 
 base_url = "http://localhost:5000"  # Replace with your Flask API base URL
-restaurants_endpoint = "/restaurants/city"
+restaurants_endpoint = "/restaurants"
 
 selected_option = st.selectbox("Select an action:", ["","Search Restaurants"])
 lat= st.text_input("Enter latitude:")
 lng= st.text_input('Enter longitude:')
-stat= st.selectbox('Select the state: ',
+'''stat= st.selectbox('Select the state: ',
                     ("California",
-                     ))
-chk= st.selectbox('Please select the city: ',
+                     "West Hollywood"
+                     ))'''
+city= st.selectbox('Please select the city: ',
                   ( "Mammoth Lakes",
                     "Los Angeles",
                     "Midpines",
@@ -40,10 +42,11 @@ chk= st.selectbox('Please select the city: ',
                     "North Hollywood"))
 
 if selected_option=='Search Restaurants':
-    if lat and lng and chk and stat:
-        st.button('Execute')
-        full_url = f'{base_url}{restaurants_endpoint}{lat}/{lng}'
-        response = requests.get(full_url,params={'city': chk})
+    st.button('Execute')
+    if lat and lng and city :
+        
+        full_url = f'{base_url}{restaurants_endpoint}/{city}/{lat}/{lng}'
+        response = requests.get(full_url)
         if response.status_code==200:
             restaurant_data= response.json()
             st.write('Restaurants Data')

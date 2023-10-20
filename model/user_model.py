@@ -159,18 +159,16 @@ class user_clss():
                 b.display_phone,
                 b.distance,
                 l.address1,
-                l.address2,
-                l.city,
-                SQRT(POW(b.latitude - %s, 2)+ POW(b.longitude - %s,2)) AS proximity
+                l.address2
+                
                 FROM 
                     businesses AS b
                 INNER JOIN 
                     locations AS l ON b.id=l.business_id
-                WHERE 
-                    l.city=%s
-                
+               WHERE 
+                    l.city = %s
                 ORDER BY 
-                    proximity ASC
+                    SQRT(POW(b.latitude - %s, 2) + POW(b.longitude - %s, 2)) ASC
                 """
             
           
@@ -210,7 +208,7 @@ class user_clss():
 
     
     def data(self):
-        query='SELECT DISTINCT city from locations '
+        query='SELECT DISTINCT state from locations '
 
         self.mycursor.execute(query)
         returants= self.mycursor.fetchall()
